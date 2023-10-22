@@ -87,7 +87,30 @@ export function VideoInputForm() {
 
     const audioFile = await convertVideoToAudio(videoFile);
 
-    console.log(audioFile); 
+    const data  = new FormData();
+
+    data.append('file', audioFile);
+
+    const response = await fetch('http://localhost:3333/videos', {
+      method: 'POST',
+      body: data,
+    });
+
+    const result = await response.json();
+
+    const videoId = result.video.id;
+
+    await fetch(`http://localhost:3333/videos/${videoId}/transcription`, {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body: JSON.stringify({prompt}),
+    });
+        
+
+    console.log('Finalizou');
+
   }
 
   return (
